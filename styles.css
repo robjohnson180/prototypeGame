@@ -1,0 +1,29 @@
+﻿body{
+    background-color: black;
+    color: white;
+    text-align:start
+}
+
+/*#PlayArea {
+    width: 600px;
+    height: 1000px;
+}
+*/
+#NextPiece {
+
+    position: fixed;
+    margin-left: 10px;
+    margin-top: 60px;
+}
+
+/*#NextPieceText {
+    color: white;
+    position: fixed;
+}
+*/
+.Game {
+    border: 2px solid;
+    border-color: white;
+    background-color: #01250f;
+    
+}
