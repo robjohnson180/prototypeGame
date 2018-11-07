@@ -8,10 +8,15 @@ var nextContext = nextCanvas.getContext('2d');
 var lives = 3;
 var nextBlock = null;
 var block = null;
+var tetrisDelay = 25;
+var currentDelay = 0;
 
 var gridX = [];
 var gridY = [];
+var allBlocks = [];
 
+var width = 20;
+var height = 30;
 var grid = 20;
 
 var paddle = {
@@ -45,11 +50,37 @@ var tetrisBlocks = {
     currentY: this.startY,
     currentCells: [],
     speed: 1,
-    types: ['square', 'line', 'L', 'L2', 'stairsL', 'stairsR', 'T']
+    types: ['square', 'line', 'L', 'J', 'Z', 'S', 'T']
 }
-nextBlock = createPiece();
-block = nextBlock;
-nextBlock = createPiece();
+
+/*TEST
+var board = document.getElementsByClassName('tetris-board')[0];
+board.innerHTML = '';
+var counter = 0;
+for (var y = 0; y < height; y++) {
+    var row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.row = y;
+
+    for (var x = 0; x < width; x++) {
+        var block = document.createElement('div');
+        block.className = 'block';
+        block.dataset.x = x;
+        block.dataset.y = y;
+        block.dataset.index = counter;
+        block.dataset.state = 0;
+        block.innerHTML = '0 : ' + counter;
+        row.appendChild(block);
+        counter++;
+    }
+    board.appendChild(row);
+}
+
+END OF TEST*/
+
+currentBlock = createPiece();
+//block = nextBlock;
+//nextBlock = createPiece();
 function pickPiece() {
     var num = Math.floor(Math.random() * tetrisBlocks.types.length);
     console.log(tetrisBlocks.types[num]);
@@ -59,78 +90,88 @@ function pickPiece() {
 function createPiece() {
     var thisPiece = pickPiece();
     var tiles = {
-        ax: tetrisBlocks.startX,
+        /*ax: tetrisBlocks.startX,
         ay: tetrisBlocks.startY,
         bx: 0,
         by: 0,
         cx: 0,
         cy: 0,
         dx: 0,
-        dy: 0,
-        color: '#ffffff'
+        dy: 0,*/
+        shape: [],
+        color: '#ffffff',
+        location: [canvas.width / 2, 0],
+        //indexes: getBlock
     }
     switch (thisPiece) {
         case 'square':
-            tiles.bx = tetrisBlocks.startX + grid;
+            /*tiles.bx = tetrisBlocks.startX + grid;
             tiles.by = tetrisBlocks.startY;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + grid;
             tiles.dx = tetrisBlocks.startX + grid;
-            tiles.dy = tetrisBlocks.startY + grid;
+            tiles.dy = tetrisBlocks.startY + grid;*/
+            tiles.shape = [[0, 0], [0, grid], [grid, 0], [grid, grid]];
             tiles.color = '#0859db';
             break;
         case 'line':
-            tiles.bx = tetrisBlocks.startX;
+            /*tiles.bx = tetrisBlocks.startX;
             tiles.by = tetrisBlocks.startY + grid;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + (grid * 2);
             tiles.dx = tetrisBlocks.startX;
-            tiles.dy = tetrisBlocks.startY + (grid * 3);
+            tiles.dy = tetrisBlocks.startY + (grid * 3);*/
+            tiles.shape = [[0, 0], [0, grid], [0, grid * 2], [0, grid * 3]];
             tiles.color = '#b56f07';
             break;
         case 'L':
-            tiles.bx = tetrisBlocks.startX;
-            tiles.by = tetrisBlocks.startY + grid;
-            tiles.cx = tetrisBlocks.startX;
-            tiles.cy = tetrisBlocks.startY + (grid * 2);
-            tiles.dx = tetrisBlocks.startX + grid;
-            tiles.dy = tetrisBlocks.startY + (grid * 2);
+            /* tiles.bx = tetrisBlocks.startX;
+             tiles.by = tetrisBlocks.startY + grid;
+             tiles.cx = tetrisBlocks.startX;
+             tiles.cy = tetrisBlocks.startY + (grid * 2);
+             tiles.dx = tetrisBlocks.startX + grid;
+             tiles.dy = tetrisBlocks.startY + (grid * 2);*/
+            tiles.shape = [[0, 0], [0, grid], [0, grid * 2], [grid, grid * 2]];
             tiles.color = '#a308db';
             break;
-        case 'L2':
-            tiles.bx = tetrisBlocks.startX;
+        case 'J':
+            /*tiles.bx = tetrisBlocks.startX;
             tiles.by = tetrisBlocks.startY + grid;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + (grid * 2);
             tiles.dx = tetrisBlocks.startX - grid;
-            tiles.dy = tetrisBlocks.startY + (grid * 2);
+            tiles.dy = tetrisBlocks.startY + (grid * 2);*/
+            tiles.shape = [[0, 0], [0, grid], [0, grid * 2], [-grid, grid * 2]];
             tiles.color = '#03aaad';
             break;
-        case 'stairsR':
-            tiles.bx = tetrisBlocks.startX - grid;
+        case 'S':
+            /*tiles.bx = tetrisBlocks.startX - grid;
             tiles.by = tetrisBlocks.startY;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + grid;
             tiles.dx = tetrisBlocks.startX + grid;
-            tiles.dy = tetrisBlocks.startY + grid;
+            tiles.dy = tetrisBlocks.startY + grid;*/
+            tiles.shape = [[0, 0], [0, grid], [grid, 0], [-grid, grid]];
             tiles.color = '#dd9d9d';
             break;
-        case 'stairsL':
-            tiles.bx = tetrisBlocks.startX + grid;
+        case 'Z':
+            /*tiles.bx = tetrisBlocks.startX + grid;
             tiles.by = tetrisBlocks.startY;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + grid;
             tiles.dx = tetrisBlocks.startX - grid;
-            tiles.dy = tetrisBlocks.startY + grid;
+            tiles.dy = tetrisBlocks.startY + grid;*/
+            tiles.shape = [[0, 0], [-grid, 0], [0, grid], [grid, grid]];
             tiles.color = '#ada703';
             break;
         case 'T':
-            tiles.bx = tetrisBlocks.startX - grid;
+            /*tiles.bx = tetrisBlocks.startX - grid;
             tiles.by = tetrisBlocks.startY + grid;
             tiles.cx = tetrisBlocks.startX;
             tiles.cy = tetrisBlocks.startY + grid;
             tiles.dx = tetrisBlocks.startX + grid;
-            tiles.dy = tetrisBlocks.startY + grid;
+            tiles.dy = tetrisBlocks.startY + grid;*/
+            tiles.shape = [[0, 0], [0, grid], [-grid, 0], [grid, 0]];
             tiles.color = '#06a30e';
             break;
         default:
@@ -207,10 +248,33 @@ document.onkeyup = function (press) {
         case 65:
             //a
             //tetris left
-            block.ax -= grid;
+            /*block.ax -= grid;
             block.bx -= grid;
             block.cx -= grid;
-            block.dx -= grid;
+            block.dx -= grid;*/
+            /*if (currentBlock.shape === 'line' || currentBlock.shape === 'square' || currentBlock.shape==='L') {
+                if (currentBlock.location[0] > 0) {
+                    currentBlock.location[0] -= grid;
+                }
+            }
+            else {
+                if (currentBlock.location[0] > 20) {
+                    currentBlock.location[0] -= grid;
+                }
+            }*/
+            for (var i = 0; i < currentBlock.shape.length; i++) {
+                console.log(currentBlock.shape[i][0] + (currentBlock.location[0]))
+                if (currentBlock.shape[i][0] + (currentBlock.location[0]) === 0) {
+                    return
+                }
+                else {
+                    if (i === currentBlock.shape.length - 1) {
+                        currentBlock.location[0] -= grid;
+                    }
+                }
+
+            }
+
             break;
         case 87:
             //w
@@ -220,14 +284,27 @@ document.onkeyup = function (press) {
         case 68:
             //d
             //tetris right
-            block.ax += grid;
+            /*block.ax += grid;
             block.bx += grid;
             block.cx += grid;
-            block.dx += grid;
+            block.dx += grid;*/
+            for (var i = 0; i < currentBlock.shape.length; i++) {
+                console.log(currentBlock.shape[i][0] + (currentBlock.location[0]))
+                if (currentBlock.shape[i][0] + (currentBlock.location[0]) === canvas.width - grid) {
+                    return
+                }
+                else {
+                    if (i === currentBlock.shape.length - 1) {
+                        currentBlock.location[0] += grid;
+                    }
+                }
+
+            }
             break;
         case 83:
             //s
             //rotate tetris block
+
 
             break;
         default:
@@ -247,6 +324,62 @@ function loseLife() {
     }
     ball = createBall();
 
+}
+
+function drawShape() {
+    var shape = currentBlock.shape;
+    var location = currentBlock.location;
+
+    for (var i = 0; i < shape.length; i++) {
+        var x = shape[i][0] + location[0];
+        var y = shape[i][1] + location[1];
+        //console.log(x);
+        //console.log(y);
+        //var block = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+        //console.log(block);
+        //block.classList.add('filled');
+        //block.style.backgroundColor = shape.color;
+        context.beginPath();
+        context.fillStyle = currentBlock.color;
+        context.fillRect(x, y, grid, grid);
+        context.closePath();
+    }
+    for (var a = 0; a < allBlocks.length; a++) {
+        for (var b = 0; b < allBlocks[a].shape.length;b++) {
+            var x = allBlocks[a].shape[a][0] + location[0];
+            var y = allBlocks[a].shape[a][1] + location[1];
+            //console.log(x);
+            //console.log(y);
+            //var block = document.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+            //console.log(block);
+            //block.classList.add('filled');
+            //block.style.backgroundColor = shape.color;
+            context.beginPath();
+            context.fillStyle = allBlocks[a].color;
+            context.fillRect(x, y, grid, grid);
+        }
+    }
+    if (tetrisDelay >= currentDelay) {
+        currentDelay++;
+        return
+    }
+    for (var i = 0; i < currentBlock.shape.length; i++) {
+        console.log(currentBlock.shape[i][1] + (currentBlock.location[1]))
+        if (currentBlock.shape[i][1] + (currentBlock.location[1]) === canvas.height - grid) {
+            allBlocks.push(currentBlock);
+            currentBlock = createPiece();
+            console.log(currentBlock);
+            return
+        }
+        else {
+            if (i === currentBlock.shape.length - 1) {
+                currentBlock.location[1] += grid;
+            }
+        }
+
+    }
+
+    // console.log(currentBlock.shape);
 }
 
 function drawBall() {
@@ -322,12 +455,12 @@ function draw() {
         //context.fillStyle = nextBlock.color;
 
         //TODO draw tetris block
-
-        context.fillStyle = block.color;
+        drawShape();
+        /*context.fillStyle = block.color;
         context.fillRect(block.ax, block.ay, grid, grid);
         context.fillRect(block.bx, block.by, grid, grid);
         context.fillRect(block.cx, block.cy, grid, grid);
-        context.fillRect(block.dx, block.dy, grid, grid);
+        context.fillRect(block.dx, block.dy, grid, grid);*/
 
         requestAnimationFrame(draw);
     }
