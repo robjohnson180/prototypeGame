@@ -1,11 +1,60 @@
 1) Was the game too easy/difficult?
 
+kinda difficult, but could do with more features
+
+Not too difficult im just bad
+
+I thought that it was a good difficulty, good test of different reflxes
+
+Akira:" it was well balanced in terms of playability, and i can see this game being developed into a successfull project that adds a great deal of difficulty and reward."
 If yes, why?
+
+I think it would be great with multiple levels of difficulty. I think its a good middle-ground as is.
 
 2) Should the score be displayed as time alive, number of tetris rows, combination of both or other?
 
+time alive, because of how fast paced the game is
+
+it should be a combination of both as then it will make the game more diffcult
+
+Time alive as the base score, it would help the player determin where they are in regards to how well they're doing. Tetris rows as a bonus
+
+Akira: "It would be a helpful aspect, however considering the fact thatthe game requires the player to constantly multi-task, it would be an un-used feature. similar to the 80/20 principle".
+
+Tetris rows could be like a multiplier for the time alive. so a combo
+						
 3) Did you encounter any bugs?
 
+Tetris
+
+tetris
+
+The tetris block/s started off the side of the screen
+
+no
+
+nope
+	
 4) Are the paddle/ball/tetris blocks falling at a good speed?
 
+I'd say the speed is average, somewhere in the middle
+
+the speed is good
+
+Yes, any faster I think could be more challenging but as a casual game it's a good speed
+
+Akira:" It's the ideal speed considering the start of the game is usually meant to be easy. Then progress in difficulty".
+
+see above, its a good average. maybe power-ups to slow time or something?
+
 5) Any other suggestions?
+
+Maybe different backgrounds and potential levels
+
+different backgrounds and maybe a duller red zone
+
+Look at different styles maybe? See what other displays could fit the game aesthetic
+
+Akira:" experiment with the UI and develop the difficluty".
+
+Hitting blocks breaks them apart or stores a tetris piece.
