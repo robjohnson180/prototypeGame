@@ -8,7 +8,7 @@ var nextContext = nextCanvas.getContext('2d');
 var lives = 3;
 var nextBlock = null;
 var block = null;
-var tetrisDelay = 25;
+var tetrisDelay = 20;
 var currentDelay = 0;
 
 var gridX = [];
@@ -26,14 +26,14 @@ var paddle = {
     height: 4,
     moveLeft: false,
     moveRight: false,
-    speed: 2
+    speed: 2.5
 }
 
 function createBall() {
     var b = {
         x: paddle.x,
         y: paddle.y - (paddle.height + 1),
-        speed: 1.25,
+        speed: 3,
         radius: 5,
         dx: -1,
         dy: 1
@@ -42,9 +42,17 @@ function createBall() {
 }
 var ball = createBall();
 
+var healthBar = {
+    width: nextCanvas.width/3,
+    height: 20,
+    color: '#c60909',
+    x: 0,
+    y: 0
+}
 
 var tetrisBlocks = {
     startX: canvas.width / 2,
+  //  startX: Math.floor(Math.random()*20)*grid,
     startY: 0,
     currentX: this.startX,
     currentY: this.startY,
@@ -100,7 +108,7 @@ function createPiece() {
         dy: 0,*/
         shape: [],
         color: '#ffffff',
-        location: [canvas.width / 2, 0],
+        location: [Math.floor(Math.random() * 20) * grid, 0],
         //indexes: getBlock
     }
     switch (thisPiece) {
@@ -344,7 +352,7 @@ function drawShape() {
         context.fillRect(x, y, grid, grid);
         context.closePath();
     }
-    for (var a = 0; a < allBlocks.length; a++) {
+    /*for (var a = 0; a < allBlocks.length; a++) {
         for (var b = 0; b < allBlocks[a].shape.length;b++) {
             var x = allBlocks[a].shape[a][0] + location[0];
             var y = allBlocks[a].shape[a][1] + location[1];
@@ -358,11 +366,12 @@ function drawShape() {
             context.fillStyle = allBlocks[a].color;
             context.fillRect(x, y, grid, grid);
         }
-    }
+    }*/
     if (tetrisDelay >= currentDelay) {
         currentDelay++;
         return
     }
+    currentDelay = 0;
     for (var i = 0; i < currentBlock.shape.length; i++) {
         console.log(currentBlock.shape[i][1] + (currentBlock.location[1]))
         if (currentBlock.shape[i][1] + (currentBlock.location[1]) === canvas.height - grid) {
@@ -413,6 +422,7 @@ function drawBall() {
 }
 
 function draw() {
+    nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
     if (ball != null) {
         if (paddle.moveLeft === true) {
             paddle.x -= paddle.speed;
@@ -428,6 +438,15 @@ function draw() {
             paddle.x = canvas.width - paddle.width / 2;
         }
         context.clearRect(0, 0, canvas.width, canvas.height);
+        checkCollide();
+        for (i = 0; i < currentBlock.shape.length; i++) {
+            if (currentBlock.shape[i][0] + currentBlock.location[0] < 0) {
+                currentBlock.location[0] += grid;
+            }
+            if (currentBlock.shape[i][0] + currentBlock.location[0] > canvas.width) {
+                currentBlock.location[0] -= grid;
+            }
+        }
         //Draw red box
         context.beginPath();
         context.rect(0, paddle.y + 10, canvas.width, canvas.height);
@@ -436,6 +455,11 @@ function draw() {
         context.fill();
 
         //Draw health
+        nextContext.beginPath();
+        nextContext.rect(healthBar.x, healthBar.y, healthBar.width * lives, healthBar.height);
+        nextContext.fillStyle = healthBar.color;
+        nextContext.closePath();
+        nextContext.fill();
 
         //Draw paddle
         context.beginPath();
@@ -463,5 +487,13 @@ function draw() {
         context.fillRect(block.dx, block.dy, grid, grid);*/
 
         requestAnimationFrame(draw);
+    }
+}
+function checkCollide() {
+    for (i = 0; i < currentBlock.shape.length; i++) {
+        if ((currentBlock.shape[i][0]+currentBlock.location[0]>paddle.x&&currentBlock.shape[i][0]+currentBlock.location[0]<(paddle.x+width))&&currentBlock.shape[i][1]+currentBlock.location[1]>=paddle.y&&currentBlock.shape[i][1]+currentBlock.location[1]<=paddle.y) {
+            loseLife();
+            currentBlock = createPiece();
+        }
     }
 }
