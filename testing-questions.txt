@@ -1,0 +1,11 @@
+1) Was the game too easy/difficult?
+
+If yes, why?
+
+2) Should the score be displayed as time alive, number of tetris rows, combination of both or other?
+
+3) Did you encounter any bugs?
+
+4) Are the paddle/ball/tetris blocks falling at a good speed?
+
+5) Any other suggestions?
